@@ -800,7 +800,7 @@ class FlowClient:
         if method == "yescaptcha":
             client_key = config.yescaptcha_api_key
             base_url = config.yescaptcha_base_url
-            task_type = "ReCaptchaV3EnterpriseTaskProxyless"
+            task_type = "NoCaptchaTaskProxyless"
         elif method == "capmonster":
             client_key = config.capmonster_api_key
             base_url = config.capmonster_base_url
@@ -828,14 +828,22 @@ class FlowClient:
         try:
             async with AsyncSession() as session:
                 create_url = f"{base_url}/createTask"
+                
+                # Build task data based on method
+                task_data = {
+                    "websiteURL": website_url,
+                    "websiteKey": website_key,
+                    "type": task_type,
+                    "pageAction": page_action
+                }
+                
+                # YesCaptcha requires isEnterprise for reCAPTCHA v3 Enterprise
+                if method == "yescaptcha":
+                    task_data["isEnterprise"] = True
+                
                 create_data = {
                     "clientKey": client_key,
-                    "task": {
-                        "websiteURL": website_url,
-                        "websiteKey": website_key,
-                        "type": task_type,
-                        "pageAction": page_action
-                    }
+                    "task": task_data
                 }
 
                 result = await session.post(create_url, json=create_data, impersonate="chrome110")
