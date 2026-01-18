@@ -800,7 +800,7 @@ class FlowClient:
         if method == "yescaptcha":
             client_key = config.yescaptcha_api_key
             base_url = config.yescaptcha_base_url
-            task_type = "RecaptchaV3TaskProxylessM1"
+            task_type = "ReCaptchaV3EnterpriseTaskProxyless"
         elif method == "capmonster":
             client_key = config.capmonster_api_key
             base_url = config.capmonster_base_url
